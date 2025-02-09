@@ -235,7 +235,7 @@
                         episodeItem.textContent = episodio;
                         let label = 'SUB';
                         if (
-                            (season === 1 && index === 9) || // Temporada 1, episodio 10 en ES
+                            (season === 1 && index < 740) || // Temporada 1, episodio 10 en ES
                             (season === 2 && index < 5) ||   // Temporada 2, primeros 5 episodios en ES
                             (season === 3 && index < 2) ||   // Temporada 3, primeros 2 episodios en ES
                             (season === 4 && index < 7)      // Temporada 4, primeros 7 episodios en ES
