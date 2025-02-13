@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algo-embarazada Nagi Plus</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            scroll-behavior: smooth;
+        }
+        .header {
+            height: 300px;
+            display: flex; /* Para organizar el póster y el video */
+            align-items: center; /* Alinea verticalmente el contenido */
+        }
+        .poster-container {
+            width: 100px; /* Ajusta el ancho del póster según sea necesario */
+            margin-right: 20px; /* Espacio entre el póster y el video */
+        }
+        .poster-container img {
+            width: 100%;
+            height: auto;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .content {
+            padding: 20px;
+            display: flex; /* Para organizar el póster y la información */
+        }
+        .details-container {
+            flex: 1; /* La información ocupa el espacio restante */
+        }
+        .details h1 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .details p {
+            margin: 5px 0;
+        }
+        .buttons {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+        }
+        .btn-lang, .btn-download {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .btn-download {
+            background-color: #FFD700; /* Dorado */
+            color: black; /* Texto negro */
+            margin-left: auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-download::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: left 0.5s;
+        }
+        .btn-download:hover::before {
+            left: 100%;
+        }
+        .server-list {
+            display: flex; /* Flex para controlar la disposición */
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: flex-end; /* Alinea a la derecha */
+            flex-direction: row; /* Coloca los elementos en fila */
+        }
+        .server-item {
+            background-color: #555; /* Color plomo inicial */
+            padding: 12px 24px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+        }
+        .server-item:hover {
+            transform: scale(1.05); /* Animación al pasar el cursor */
+        }
+        .server-item.selected {
+            color: black;
+        }
+        .server-item.pro.selected {
+            background-color: #FFD700; /* Dorado brillante */
+        }
+        .server-item.medio.selected {
+            background-color: #FFA500; /* Naranja medio */
+        }
+        .server-item.basico.selected {
+            background-color: #555; /* Color básico */
+        }
+        .servers {
+            display: flex; /* Habilita Flexbox */
+            flex-direction: column; /* Elementos en columna */
+        }
+        .servers-container {
+            margin-left: 10px;
+        }
+        .details-top {
+            display: flex; /* Usa Flexbox para la sección superior */
+            justify-content: space-between; /* Distribuye elementos */
+            align-items: center; /* Alinea verticalmente */
+            margin-bottom: 10px; /* Espacio abajo */
+        }
+        .rating {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .btn-lang {
+            background: linear-gradient(to right, #00FF00, #FF0000, #FF69B4);
+            border-radius: 10px;
+            color: #000;
+            text-shadow: 1px 1px 2px #000;
+            transition: background-position 0.5s ease-in-out;
+        }
+        .btn-lang:hover {
+            background-position: 100% 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header" id="videoSection">
+        <iframe id="videoPlayer" src="https://nagi-plus4.github.io/solo_vid.github.io/Algo-embarazada.html"></iframe>
+    </div>
+    <div class="content">
+        <div class="poster-container">
+            <img src="https://media.themoviedb.org/t/p/w300_and_h450_bestv2/jsfD5FoS85glIyGudwd1q7Gg97.jpg" alt="Sonic the Hedgehog 3 Poster">
+        </div>
+        <div class="details-container">
+            <div class="details">
+                <div class="details-top">
+                    <h1>Algo embarazada</h1>
+                    <div class="rating">6.2</div>
+                </div>
+                <p>Publicado: 2025 | Comedia | Romance.</p>
+                <p>Sinopsis: Cuando los sueños de Lainy de tener su propia familia comienzan a zozobrar, celosa del embarazo de su mejor amiga, se pone una barriga falsa, cuenta una mentira y se enamora sin quererlo de su hombre ideal.</p>
+                <p>Duración: 1h 40m</p>
+                <div class="buttons">
+                    <button class="btn-lang" onclick="toggleFullscreen()">Pantalla Completa</button>
+                    <button class="btn-download">Descargar</button>
+                </div>
+                <div class="servers">
+                    <div class="servers-container">
+                        <h3>Servidores</h3>
+                    </div>
+                    <div class="server-list">
+                        <div class="server-item pro" data-server="1">Servidor 1 Pro</div>
+                        <div class="server-item medio" data-server="2">Servidor 2 Medio</div>
+                        <div class="server-item basico" data-server="3">Servidor 3 Básico</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const serverItems = document.querySelectorAll('.server-item');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const downloadButton = document.querySelector('.btn-download');
+
+        // URLs de visualización de los servidores
+        const urlsVisualización = [
+            'https://nagi-plus4.github.io/solo_vid.github.io/Algo-embarazada.html', // Servidor 1
+            'https://streemkeflixserv.blogspot.com/?link=https://hugh.cdn.rumble.cloud/video/fwe2/77/s8/2/3/8/A/x/38Axx.aaa.mp4&titulo=Algo%20embarazada%20%20&poster=https://media.themoviedb.org/t/p/w780/tPFbjgbYNnveVd75Oh5EMjI8GqP.jpg', // Servidor 2
+            'https://kingplayadb.blogspot.com/?m=1.html?r=aHR0cHM6Ly9uaWthcGxheWVyci5jb20vZW1iZWQvZ2wxeWJjdjN6cnZq' // Servidor 3
+        ];
+
+        // URLs de descarga de los servidores
+        const urlsDescarga = [
+            'https://ryderjet.com/download/gl1ybcv3zrvj', // Servidor 1
+            'https://ryderjet.com/download/gl1ybcv3zrvj', // Servidor 2
+            'https://ryderjet.com/download/gl1ybcv3zrvj' // Servidor 3
+        ];
+
+        serverItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                videoPlayer.src = urlsVisualización[index];
+                // Cambia el botón de descarga
+                downloadButton.onclick = () => {
+                    window.open(urlsDescarga[index], '_blank');
+                };
+                // Resaltar el servidor seleccionado
+                document.querySelectorAll('.server-item').forEach(el => {
+                    el.classList.remove('selected');
+                    el.style.backgroundColor = '#555'; // Resetea el color de fondo a plomo
+                });
+                item.classList.add('selected');
+                item.style.backgroundColor = item.classList.contains('pro') ? '#FFD700' : item.classList.contains('medio') ? '#FFA500' : '#555';
+            });
+        });
+
+        function toggleFullscreen() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                videoSection.requestFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>
