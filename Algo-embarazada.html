@@ -3,19 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algo-embarazada Nagi Plus</title>
+    <title>Algo embarazada Nagi Plus</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #121212;
             color: white;
             scroll-behavior: smooth;
+            background: url('https://media.themoviedb.org/t/p/w780/cynnyI8bAaiW0Zc8RQSJG2UQp84.jpg') no-repeat center center fixed; /* Imagen de fondo */
+            background-size: cover; /* Cubre todo el fondo */
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8); /* Degradado oscuro más opaco */
+            z-index: 1; /* Asegúrate de que esté detrás del contenido */
         }
         .header {
             height: 300px;
             display: flex; /* Para organizar el póster y el video */
             align-items: center; /* Alinea verticalmente el contenido */
+            position: relative; /* Para que el contenido esté sobre el overlay */
+            z-index: 2; /* Asegúrate de que esté por encima del overlay */
         }
         .poster-container {
             width: 100px; /* Ajusta el ancho del póster según sea necesario */
@@ -29,10 +41,13 @@
             width: 100%;
             height: 100%;
             border: none;
+            display: none; /* Oculta el video inicialmente */
         }
         .content {
             padding: 20px;
             display: flex; /* Para organizar el póster y la información */
+            position: relative; /* Para que el contenido esté sobre el overlay */
+            z-index: 2; /* Asegúrate de que esté por encima del overlay */
         }
         .details-container {
             flex: 1; /* La información ocupa el espacio restante */
@@ -81,8 +96,7 @@
             gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            justify-content: flex-end; /* Alinea a la derecha */
-            flex-direction: row; /* Coloca los elementos en fila */
+            justify-content: flex-start; /* Alinea a la izquierda */
         }
         .server-item {
             background-color: #555; /* Color plomo inicial */
@@ -109,13 +123,6 @@
         .server-item.basico.selected {
             background-color: #555; /* Color básico */
         }
-        .servers {
-            display: flex; /* Habilita Flexbox */
-            flex-direction: column; /* Elementos en columna */
-        }
-        .servers-container {
-            margin-left: 10px;
-        }
         .details-top {
             display: flex; /* Usa Flexbox para la sección superior */
             justify-content: space-between; /* Distribuye elementos */
@@ -125,6 +132,7 @@
         .rating {
             font-size: 20px;
             font-weight: bold;
+            color: #FFD700; /* Color dorado */
         }
         .btn-lang {
             background: linear-gradient(to right, #00FF00, #FF0000, #FF69B4);
@@ -136,15 +144,99 @@
         .btn-lang:hover {
             background-position: 100% 0;
         }
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            color: #333;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            z-index: 3; /* Por encima de todo */
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: wave 1.5s infinite; /* Animación de olas */
+        }
+        .play-button:hover {
+            transform: scale(1.1); /* Aumenta el tamaño al pasar el cursor */
+        }
+        .play-button:active {
+            transform: scale(0.9); /* Efecto de pulsar */
+        }
+        @keyframes wave {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+        .share-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white; /* Fondo blanco */
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: black; /* Ícono negro */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: pulse 1.5s infinite; /* Animación de pulsar */
+        }
+        .share-button:hover {
+            transform: scale(1.1); /* Aumenta el tamaño al pasar el cursor */
+        }
+        .share-button:active {
+            transform: scale(0.9); /* Efecto de pulsar */
+        }
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        .connection-message {
+            position: fixed;
+            bottom: 100px; /* Posiciona el mensaje justo encima del botón de compartir */
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 4; /* Por encima de todo */
+        }
     </style>
 </head>
 <body>
+    <div class="overlay"></div> <!-• Capa de degradado más opaco -->
     <div class="header" id="videoSection">
-        <iframe id="videoPlayer" src="https://nagi-plus4.github.io/solo_vid.github.io/Algo-embarazada.html"></iframe>
+        <iframe id="videoPlayer" src="https://nagi-plus4.github.io/solo_vid.github.io/REPRODUCTOR-OFICIAL-NAGI-PLUS.html?link=https://hugh.cdn.rumble.cloud/video/fwe2/77/s8/2/3/8/A/x/38Axx.aaa.mp4&titulo=Algo%20embarazada%20%20&tiempo=16"></iframe>
+        <button class="play-button" id="playButton">
+            <i class="fas fa-play"></i>
+        </button>
     </div>
-    <div class="content">
+    <div class="content" style="display: flex;">
         <div class="poster-container">
-            <img src="https://media.themoviedb.org/t/p/w300_and_h450_bestv2/lpMXvcdOnEg4rvsIjWEImhHI1aH.jpg" alt="Sonic the Hedgehog 3 Poster">
+            <img src="https://media.themoviedb.org/t/p/w500/lpMXvcdOnEg4rvsIjWEImhHI1aH.jpg" alt="Algo embarazada Poster">
         </div>
         <div class="details-container">
             <div class="details">
@@ -152,9 +244,17 @@
                     <h1>Algo embarazada</h1>
                     <div class="rating">6.2</div>
                 </div>
-                <p>Publicado: 2025 | Comedia | Romance.</p>
-                <p>Sinopsis: Cuando los sueños de Lainy de tener su propia familia comienzan a zozobrar, celosa del embarazo de su mejor amiga, se pone una barriga falsa, cuenta una mentira y se enamora sin quererlo de su hombre ideal.</p>
-                <p>Duración: 1h 40m</p>
+                <p><h4>Publicado: 5/2/2025 (BO)
+Comedia, Romance
+.</h5></p>
+                <p>Sinopsis: Cuando los sueños de Lainy de tener su propia familia comienzan a zozobrar, celosa del embarazo de su mejor amiga, se pone una barriga falsa, cuenta una mentira y se enamora sin quererlo de su hombre ideal.
+
+Julie Paiva
+
+Screenplay, Story
+
+Tyler Spindel</p>
+                <p>Duración: 1h 37m</p>
                 <div class="buttons">
                     <button class="btn-lang" onclick="toggleFullscreen()">Pantalla Completa</button>
                     <button class="btn-download">Descargar</button>
@@ -164,7 +264,7 @@
                         <h3>Servidores</h3>
                     </div>
                     <div class="server-list">
-                        <div class="server-item pro" data-server="1">Servidor 1 Pro</div>
+                        <div class="server-item pro" data-server="1">Servidor 1 PRO</div>
                         <div class="server-item medio" data-server="2">Servidor 2 Medio</div>
                         <div class="server-item basico" data-server="3">Servidor 3 Básico</div>
                     </div>
@@ -172,16 +272,57 @@
             </div>
         </div>
     </div>
+    <button class="share-button" id="shareButton">
+        <i class="fas fa-tv"></i> <!-• Ícono de TV -->
+    </button>
+    <div class="connection-message" id="connectionMessage">Conéctate a una TV</div> <!-• Mensaje para conectarse a TV -->
     <script>
-        const serverItems = document.querySelectorAll('.server-item');
+        const playButton = document.getElementById('playButton');
         const videoPlayer = document.getElementById('videoPlayer');
-        const downloadButton = document.querySelector('.btn-download');
+        const shareButton = document.getElementById('shareButton');
+        const connectionMessage = document.getElementById('connectionMessage');
+
+        // Mostrar el video al hacer clic en el botón de play
+        playButton.addEventListener('click', () => {
+            videoPlayer.style.display = 'block'; // Muestra el iframe
+            videoPlayer.src = videoPlayer.src; // Reinicia el video
+            playButton.style.display = 'none'; // Oculta el botón de play
+        });
+
+        // Función para compartir pantalla
+        shareButton.addEventListener('click', async () => {
+            try {
+                const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: true,
+                });
+                console.log(mediaStream);
+                alert("Buscando dispositivos para compartir pantalla..."); // Alerta al buscar dispositivos
+            } catch (err) {
+                console.error("Error: " + err);
+            }
+        });
+
+        // Ciclo de aparición y desaparición del mensaje
+        function toggleConnectionMessage() {
+            connectionMessage.style.opacity = 1; // Muestra el mensaje
+            setTimeout(() => {
+                connectionMessage.style.opacity = 0; // Oculta el mensaje
+            }, 10000); // Mensaje visible por 10 segundos
+        }
+
+        setInterval(() => {
+            toggleConnectionMessage();
+            setTimeout(() => {
+                connectionMessage.style.opacity = 0; // Oculta el mensaje después de 10 segundos
+            }, 5000); // Mensaje aparece cada 5 segundos
+        }, 15000); // Ciclo completo de aparición y desaparición
 
         // URLs de visualización de los servidores
         const urlsVisualización = [
-            'https://nagi-plus4.github.io/solo_vid.github.io/Algo-embarazada.html', // Servidor 1
-            'https://streemkeflixserv.blogspot.com/?link=https://hugh.cdn.rumble.cloud/video/fwe2/77/s8/2/3/8/A/x/38Axx.aaa.mp4&titulo=Algo%20embarazada%20%20&poster=https://media.themoviedb.org/t/p/w780/tPFbjgbYNnveVd75Oh5EMjI8GqP.jpg', // Servidor 2
-            'https://kingplayadb.blogspot.com/?m=1.html?r=aHR0cHM6Ly9uaWthcGxheWVyci5jb20vZW1iZWQvZ2wxeWJjdjN6cnZq' // Servidor 3
+            'https://nagi-plus4.github.io/solo_vid.github.io/REPRODUCTOR-OFICIAL-NAGI-PLUS.html?link=https://hugh.cdn.rumble.cloud/video/fwe2/77/s8/2/3/8/A/x/38Axx.aaa.mp4&titulo=Algo%20embarazada%20%20&tiempo=16', // Servidor 1
+            'NO DISOPONIBLE', // Servidor 2
+            'NO DISOPONIBLE' // Servidor 3
         ];
 
         // URLs de descarga de los servidores
@@ -191,7 +332,7 @@
             'https://ryderjet.com/download/gl1ybcv3zrvj' // Servidor 3
         ];
 
-        serverItems.forEach((item, index) => {
+        document.querySelectorAll('.server-item').forEach((item, index) => {
             item.addEventListener('click', () => {
                 videoPlayer.src = urlsVisualización[index];
                 // Cambia el botón de descarga
@@ -216,5 +357,6 @@
             }
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 </body>
 </html>
